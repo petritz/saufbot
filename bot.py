@@ -26,11 +26,11 @@ def send_welcome(message):
 def send_stat(message):
   c = conn.cursor()
   username = message.from_user.username
-  c.execute("select sum(alcohol_content) from stat where username = '%s'" % (username))
+  c.execute("select sum(alcohol_content) from stat where username = '%s'", (username))
   row = c.fetchone()
   total_alcohol = row[0]
 
-  c.execute("select (select sum(alcohol_content) from stat where username = '%s') / sum(alcohol_content) from stat" % (username))
+  c.execute("select (select sum(alcohol_content) from stat where username = '%s') / sum(alcohol_content) from stat", (username))
   row = c.fetchone()
   if row and row[0]:
     total_share = row[0] * 100
@@ -76,7 +76,7 @@ def create(message):
     bot.reply_to(message, f"Bitte im Format {create_information_format} angeben")
 
   c = conn.cursor()
-  c.execute("insert into alcohol (name, percent, volume) values ('%s', %f, %f)" % (name, percent, volume))
+  c.execute("insert into alcohol (name, percent, volume) values ('%s', %f, %f)", (name, percent, volume))
   bot.reply_to(message, "Getränk %s wurde erfolgreich erstellt." % (name))
   c.close()
 
@@ -100,7 +100,7 @@ def echo_all(message):
     drink = splitted[0].lower()
   
   c = conn.cursor()
-  c.execute("select * from alcohol where lower(name) like '%%%s%%'" % drink)
+  c.execute("select * from alcohol where lower(name) like '%%%s%%'", drink)
   row = c.fetchone()
   if not row:
     # bot.reply_to(message, "Getränk nicht gefunden.")
@@ -119,7 +119,7 @@ def echo_all(message):
 
   # rho = 0.785g/ml
   alcohol = volume * (percent / 100) * 0.785
-  c.execute("insert into stat (alcohol_id, volume, alcohol_content, username) values (%d, %f, %f, '%s')" % (row[0], volume, alcohol, username))
+  c.execute("insert into stat (alcohol_id, volume, alcohol_content, username) values (%d, %f, %f, '%s')", (row[0], volume, alcohol, username))
   conn.commit()
   c.close()
 
